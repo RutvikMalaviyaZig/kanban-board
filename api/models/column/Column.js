@@ -1,8 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../../config/database");
-const Board = require("../board/Board");
 const Task = require("../task/Task");
-const { v4: uuidv4 } = require("uuid");
+
 
 const Column = sequelize.define(
   "Column",
@@ -10,7 +9,8 @@ const Column = sequelize.define(
     id: {
       type: DataTypes.UUID,
       allowNull: false,
-      defaultValue: uuidv4,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
     },
     title: {
       type: DataTypes.STRING,
@@ -18,20 +18,13 @@ const Column = sequelize.define(
     },
     boardId: {
       type: DataTypes.UUID,
-      primaryKey: true,
-      allowNull: false,
       references: {
-        model: Board,
-        key: "boardId",
+        model: 'Board',
+        key: "id",
       },
-    },
-    columnId: {
-      type: DataTypes.UUID,
-      defaultValue: uuidv4,
     },
   },
   {
-    paranoid: true,
     freezeTableName: true,
     modelName: "Column",
     timestamps: true,

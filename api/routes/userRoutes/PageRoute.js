@@ -1,4 +1,4 @@
-const {express} = require('../../../Provider') 
+const {express} = require('../../utils/Constants') 
 const router = express.Router();
 const { verifyAuthMiddleware } = require("../../middlewares/VerfiyAuthMIddleware");
 

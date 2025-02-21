@@ -1,13 +1,12 @@
 const Task = require("../../models/task/Task");
-const Column = require("../../models/column/Column");
-const sequelize = require("sequelize");
 
 const HTTP_STATUS_CODE = require("../../utils/HttpStatusCodes");
 const MESSAGES = require("../../utils/Messages");
 
+// Create a new task in a column with the given columnId
 const createTask = async (req, res) => {
-
   try {
+    // Get the title, description, and columnId from the request body
     const { title, description, columnId } = req.body;
 
     // Get the last task to determine the order of the new task
@@ -16,8 +15,10 @@ const createTask = async (req, res) => {
       order: [["order", "DESC"]], // Get the task with the highest order
     });
 
-    const newOrder = lastTask ? lastTask.order + 1 : 0; // If no task, set order as 0
+    // Set the order of the new task If no task, set order as 0
+    const newOrder = lastTask ? lastTask.order + 1 : 0;
 
+    // Create the new task in the database with the given title, description, columnId, and order
     const task = await Task.create({
       title,
       description,
@@ -36,14 +37,15 @@ const createTask = async (req, res) => {
   }
 };
 
-
-
+// Get all tasks in a column with the given columnId
 const getTasks = async (req, res) => {
   try {
+    // Find all tasks in the database with the given columnId
     const tasks = await Task.findAll({
       where: { columnId: req.params.columnId },
       order: [["order", "ASC"]], // Sort tasks by order (ascending)
     });
+
     res.status(HTTP_STATUS_CODE.OK).json({
       message: MESSAGES.OK,
       data: tasks,
@@ -55,17 +57,23 @@ const getTasks = async (req, res) => {
   }
 };
 
+// Update a task with the given taskId in the database
 const updateTask = async (req, res) => {
   try {
+    // Find the task with the given taskId in the database
     const task = await Task.findByPk(req.params.taskId);
     if (!task)
       return res
         .status(HTTP_STATUS_CODE.NOT_FOUND)
         .json({ message: MESSAGES.TASK_NOT_FOUND });
 
+    // Update the task's title and description
     const { title, description } = req.body;
+
     task.title = title || task.title;
     task.description = description || task.description;
+
+    // Save the updated task in the database
     const newTask = await task.save();
 
     res.status(HTTP_STATUS_CODE.OK).json({
@@ -79,17 +87,21 @@ const updateTask = async (req, res) => {
   }
 };
 
+// Delete a task with the given taskId from the database
 const deleteTask = async (req, res) => {
   try {
+    // Find the task with the given taskId in the database
     const task = await Task.findByPk(req.params.taskId);
     if (!task)
       return res
         .status(HTTP_STATUS_CODE.NOT_FOUND)
         .json({ message: MESSAGES.TASK_NOT_FOUND });
 
+    // Delete the task from the database
     await task.destroy();
     res.status(HTTP_STATUS_CODE.OK).json({
       message: MESSAGES.TASK_DELETED,
+      deleted: task,
     });
   } catch (err) {
     res
@@ -101,48 +113,22 @@ const deleteTask = async (req, res) => {
 // Drag and Drop Task to Another Column
 const moveTask = async (req, res) => {
   try {
+    // Get the taskId, columnId, and order from the request body
     const { taskId, columnId, order } = req.body;
-
     // Check if the task exists
-    const task = await Task.findByPk(taskId);
+    const task = await Task.findOne({ where: { id: taskId } });
     if (!task)
       return res
         .status(HTTP_STATUS_CODE.NOT_FOUND)
         .json({ message: MESSAGES.TASK_NOT_FOUND });
 
-    const oldColumnId = task.columnId; // Save the old column ID
-
     // Update the task's columnId and order
     task.columnId = columnId;
     task.order = order;
+
+    // Save the updated task in the database
     await task.save();
 
-    // Adjust other tasks' order in the target column if needed
-    await Task.update(
-      { order: sequelize.Sequelize.literal("order + 1") },
-      {
-        where: {
-          columnId,
-          order: { [sequelize.Op.gte]: order }, // Reorder tasks after the moved task
-        },
-      }
-    );
-
-    // Match columnid with oldcolumnid
-    if (oldColumnId !== columnId) {
-      // Remove the task from the old column by updating the order of tasks
-      await Task.update(
-        { order: sequelize.Sequelize.literal("order - 1") },
-        {
-          where: {
-            columnId: oldColumnId,
-            order: { [sequelize.Op.gt]: task.order }, // Update order of tasks after the moved task
-          },
-        }
-      );
-    }
-
-    // Return the updated task
     res.status(200).json(task);
   } catch (err) {
     res

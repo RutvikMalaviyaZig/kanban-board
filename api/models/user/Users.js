@@ -1,7 +1,6 @@
 "use strict";
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../../config/database");
-const { v4: uuidv4 } = require("uuid");
 const Board = require("../../models/board/Board");
 
 const User = sequelize.define(
@@ -11,7 +10,7 @@ const User = sequelize.define(
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
-      defaultValue: uuidv4, // Ensure UUID default value
+      defaultValue: DataTypes.UUIDV4, 
     },
     firstName: {
       type: DataTypes.STRING,
@@ -53,9 +52,6 @@ const User = sequelize.define(
       allowNull: true,
       field: "reset_token_expiry",
     },
-    userId: {
-      type: DataTypes.UUID,
-    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,
@@ -73,11 +69,6 @@ const User = sequelize.define(
     freezeTableName: true,
     modelName: "User",
     timestamps: true,
-    hooks: {
-      beforeCreate: (user) => {
-        user.userId = user.id;
-      },
-    },
   }
 );
 

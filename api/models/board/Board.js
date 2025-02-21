@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../../../config/database");
-const User = require("../user/Users");
+
 const Column = require("../column/Column");
-const { v4: uuidv4 } = require("uuid");
+
 
 
 const Board = sequelize.define(
@@ -10,8 +10,9 @@ const Board = sequelize.define(
   {
     id: {
       type: DataTypes.UUID,
+      primaryKey: true,
       allowNull: false,
-      defaultValue: uuidv4, 
+      defaultValue: DataTypes.UUIDV4, 
     },
     title: {
       type: DataTypes.STRING,
@@ -19,26 +20,16 @@ const Board = sequelize.define(
     },
     userId: {
       type: DataTypes.UUID,
-      primaryKey: true,
       references: {
-        model: User,
-        key: "userId",
+        model: 'User',
+        key: "id",
       },
-    },
-    boardId: {
-      type: DataTypes.UUID,
     },
   },
   {
-    paranoid: true,
     freezeTableName: true,
     modelName: "Board",
     timestamps: true,
-    hooks: {
-      beforeCreate: (board) => {
-        board.boardId = board.id;
-      },
-    },
   }
 );
 

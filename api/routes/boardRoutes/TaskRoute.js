@@ -1,13 +1,12 @@
-const {express} = require("../../../Provider")
+const {express} = require('../../utils/Constants')
 const TaskController = require('../../controllers/boardController/TaskController');
 const router = express.Router();
 
-router.post('/add', TaskController.createTask);
-router.get('/:columnId', TaskController.getTasks);
-router.put('/:taskId', TaskController.updateTask);
-router.delete('/:taskId', TaskController.deleteTask);
+router.post('/add', TaskController.createTask); // Create a new task
+router.get('/:columnId', TaskController.getTasks);  // Get all tasks
+router.patch('/:taskId', TaskController.updateTask);    // Update a task
+router.delete('/:taskId', TaskController.deleteTask);   // Delete a task
 
-// Route for moving tasks between columns
-router.put('/move', TaskController.moveTask);
+router.put('/move', TaskController.moveTask); // Route for moving tasks between columns
 
 module.exports = router;

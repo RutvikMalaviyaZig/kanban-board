@@ -2,9 +2,17 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../../config/database");
 const Column = require("../column/Column");
 
+
+
 const Task = sequelize.define(
   "Task",
   {
+    id:{
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+    },
     title: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -16,10 +24,10 @@ const Task = sequelize.define(
     columnId: {
       type: DataTypes.UUID,
       allowNull : false,
-      primaryKey: true,
+     
       references: {
-        model: Column,
-        key: "columnId",
+        model: 'Column',
+        key: "id",
       },
     },
     order: {
@@ -29,7 +37,6 @@ const Task = sequelize.define(
     },
   },
   {
-    paranoid: true,
     freezeTableName: true,
     modelName: "Task",
     timestamps: true,
