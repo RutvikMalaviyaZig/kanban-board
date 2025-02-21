@@ -65,7 +65,6 @@ const User = sequelize.define(
     },
   },
   {
-    paranoid: true,
     freezeTableName: true,
     modelName: "User",
     timestamps: true,
