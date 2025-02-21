@@ -3,6 +3,8 @@ const Task = require("../../models/task/Task");
 const HTTP_STATUS_CODE = require("../../utils/HttpStatusCodes");
 const MESSAGES = require("../../utils/Messages");
 
+
+
 // Create a new task in a column with the given columnId
 const createTask = async (req, res) => {
   try {
@@ -12,7 +14,7 @@ const createTask = async (req, res) => {
     // Get the last task to determine the order of the new task
     const lastTask = await Task.findOne({
       where: { columnId },
-      order: [["order", "DESC"]], // Get the task with the highest order
+      order: [["order", "ASC"]], // Get the task with the highest order
     });
 
     // Set the order of the new task If no task, set order as 0
@@ -37,6 +39,8 @@ const createTask = async (req, res) => {
   }
 };
 
+
+
 // Get all tasks in a column with the given columnId
 const getTasks = async (req, res) => {
   try {
@@ -56,6 +60,8 @@ const getTasks = async (req, res) => {
       .json({ message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
+
+
 
 // Update a task with the given taskId in the database
 const updateTask = async (req, res) => {
@@ -87,6 +93,8 @@ const updateTask = async (req, res) => {
   }
 };
 
+
+
 // Delete a task with the given taskId from the database
 const deleteTask = async (req, res) => {
   try {
@@ -109,6 +117,9 @@ const deleteTask = async (req, res) => {
       .json({ message: MESSAGES.INTERNAL_SERVER_ERROR });
   }
 };
+
+
+
 
 // Drag and Drop Task to Another Column
 const moveTask = async (req, res) => {

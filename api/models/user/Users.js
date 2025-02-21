@@ -77,4 +77,8 @@ User.hasMany(Board, {
   onDelete: "CASCADE",
 });
 
+Board.belongsTo(User,{
+  foreignKey: "userId",
+})
+
 module.exports = User;

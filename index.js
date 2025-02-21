@@ -1,6 +1,6 @@
 require("dotenv").config();
 // core modules
-const { express } = require("./Provider");
+const { express } = require("./api/utils/Constants.js");
 const path = require("path");
 
 // routes imports

@@ -1,5 +1,5 @@
 const Column = require("../../models/column/Column");
-
+const Board = require("../../models/board/Board")
 
 const HTTP_STATUS_CODE = require("../../utils/HttpStatusCodes");
 const MESSAGES = require("../../utils/Messages");
@@ -24,7 +24,7 @@ const createColumn = async (req, res) => {
         .status(HTTP_STATUS_CODE.NOT_FOUND)
         .json({ message: MESSAGES.BOARD_NOT_FOUND });
      
-    // Create a new column in the board with the given boardId
+    // Create a new column in the board with the given title and boardId
     const column = await Column.create({ title, boardId });
 
     res.status(HTTP_STATUS_CODE.CREATED).json({
