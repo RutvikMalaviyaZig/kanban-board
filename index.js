@@ -31,6 +31,7 @@ app.use(
     origin: "*",
   })
 );
+
 // test database connection
 sequelize
   .authenticate()
@@ -41,18 +42,8 @@ sequelize
     console.log("Error: " + err);
   });
 
+
+
 app.listen(PORT, (req, res) => {
   console.log(`server is listening at http://localhost:${PORT}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
